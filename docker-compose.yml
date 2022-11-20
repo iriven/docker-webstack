@@ -1,0 +1,128 @@
+version: '3.9'
+services:
+#--------------------------------------------------------------------------------------------------
+#   APP DATABASE SERVICE
+#--------------------------------------------------------------------------------------------------
+  postgresserver:
+    container_name: 'postgresserver'
+    hostname: 'db.iriven.net'
+    image: atchondjo/postgres
+    restart: always
+    env_file:
+      - ./settings/.local.db.env
+    volumes:
+      - ./core/docker/postgres/data:/var/lib/postgresql/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+
+#--------------------------------------------------------------------------------------------------
+#   DATABASES MANAGEMENT SERVICES
+#--------------------------------------------------------------------------------------------------
+  dbadminserver:
+    container_name: 'dbadminserver'
+    hostname: 'dbadmin.iriven.net'
+    image: atchondjo/pgadmin4
+    restart: always
+    ports:
+      - 81:80
+    env_file:
+      - ./settings/.local.pgadmin.env
+    volumes:
+      - ./core/docker/pgadmin:/var/lib/pgadmin
+      - ./core/docker/pgadmin/log:/var/log/pgadmin
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - postgresserver
+    # logging:
+    #   driver: none
+#--------------------------------------------------------------------------------------------------
+#   PHP PROCESSING SERVICE
+#--------------------------------------------------------------------------------------------------
+  phpdaemonserver:
+    container_name: 'phpdaemonserver'
+    hostname: 'php-fpm.iriven.net'
+    restart: always
+    build:
+      context: ./core/build/php
+    expose:
+      - '9000'
+    volumes:
+      - ./www/:/var/www/webroot:cached
+      - ./core/docker/php/log:/var/log
+    depends_on:
+      - postgresserver
+    healthcheck:
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 30s
+    env_file:
+      - ./settings/.local.app.env
+      - ./settings/.local.db.env
+#--------------------------------------------------------------------------------------------------
+#   WEB CLIENT SERVICE
+#--------------------------------------------------------------------------------------------------
+  gatewayserver:
+    container_name: 'gatewayserver'
+    hostname: 'nginx.iriven.net'
+    restart: always
+    build:
+      context: ./core/build/nginx
+    ports:
+      - '80:80'
+    links: # seems to have no effect alone
+      - phpdaemonserver
+    volumes:
+        - ./www/:/var/www/webroot:cached
+        - ./core/docker/nginx/log:/var/log/nginx
+    depends_on:
+      - phpdaemonserver
+      - postgresserver
+#--------------------------------------------------------------------------------------------------
+#   GITLAB WEB SERVICE
+#--------------------------------------------------------------------------------------------------
+  # gitlabserver:
+  #   image: alpinelinux/alpine-docker-gitlab
+  #   build: gitlab
+  #   hostname: ${GITLAB_HOSTNAME}
+  #   restart: always
+  #   volumes:
+  #     - ./core/docker/gitlab/repositories:/home/git/repositories
+  #     - ./core/docker/gitlab/config:/etc/gitlab
+  #     - ./core/docker/gitlab/log:/var/log
+  #     - ./core/docker/gitlab/builds:/home/git/gitlab/builds
+  #     - ./core/docker/gitlab/shared:/home/git/gitlab/shared
+  #     - ./core/docker/gitlab/uploads:/home/git/gitlab/public/uploads
+  #     - ./core/docker/gitlab/plugins:/home/git/gitlab/plugins
+  #   ports:
+  #     - "2222:22"
+  #     - "8080:80"
+  #   depends_on:
+  #     - postgresserver
+  #     - redis
+  #   # environment:
+  #   #   - POSTGRES_USER
+  #   #   - POSTGRES_PASSWORD
+  #   #   - GITLAB_ROOT_PASSWORD
+  #   #   - GITLAB_BACKUP_SKIP
+  #   #   - GITLAB_USE_PUMA
+  #   env_file:
+  #     - ./settings/.local.gitlab.env
+  #     - ./settings/.local.db.env
+#--------------------------------------------------------------------------------------------------
+#   PROJECT VOLUMES LISTING
+#--------------------------------------------------------------------------------------------------
+  # redis:
+  #   image: redis:5-alpine
+  #   restart: always
+  #   volumes:
+  #     - /srv/docker/gitlab/redis:/data
+  #   entrypoint: redis-server --appendonly yes
+
+#--------------------------------------------------------------------------------------------------
+#   PROJECT VOLUMES LISTING
+#--------------------------------------------------------------------------------------------------
+# volumes:
+#   postgresData:
+#   pgadminData:
