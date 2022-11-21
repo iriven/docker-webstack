@@ -9,7 +9,7 @@ services:
     image: atchondjo/postgres
     restart: always
     env_file:
-      - ./settings/.local.db.env
+      - ./settings/.postgres.env
     volumes:
       - ./core/docker/postgres/data:/var/lib/postgresql/data
       - /etc/timezone:/etc/timezone:ro
@@ -26,7 +26,7 @@ services:
     ports:
       - 81:80
     env_file:
-      - ./settings/.local.pgadmin.env
+      - ./settings/.pgadmin.env
     volumes:
       - ./core/docker/pgadmin:/var/lib/pgadmin
       - ./core/docker/pgadmin/log:/var/log/pgadmin
@@ -58,8 +58,8 @@ services:
       retries: 3
       start_period: 30s
     env_file:
-      - ./settings/.local.app.env
-      - ./settings/.local.db.env
+      - ./settings/.my_app.env
+      - ./settings/.postgres.env
 #--------------------------------------------------------------------------------------------------
 #   WEB CLIENT SERVICE
 #--------------------------------------------------------------------------------------------------
@@ -108,8 +108,8 @@ services:
   #   #   - GITLAB_BACKUP_SKIP
   #   #   - GITLAB_USE_PUMA
   #   env_file:
-  #     - ./settings/.local.gitlab.env
-  #     - ./settings/.local.db.env
+  #     - ./settings/.gitlab.env
+  #     - ./settings/.postgres.env
 #--------------------------------------------------------------------------------------------------
 #   PROJECT VOLUMES LISTING
 #--------------------------------------------------------------------------------------------------
