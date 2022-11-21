@@ -21,7 +21,7 @@ PHP-FPM includes numerous features that can prove beneficial for websites receiv
 - Slowlog variable configuration for detecting functions that take longer than usual to execute
 - FastCGI improvements, with a special function for stopping and downloading data while completing long processes (e.g. processing statistics)
 - Basic stats are available, similar to the mod-status module in Apache
--
+
 ### 2- PHP-FPM and Nginx
 Nginx is the ideal combination with PHP-FPM. Why? Because it’s a stable web server recognized for its impressive performance and low resource-consumption.
 
