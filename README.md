@@ -22,6 +22,10 @@ PHP-FPM includes numerous features that can prove beneficial for websites receiv
 - FastCGI improvements, with a special function for stopping and downloading data while completing long processes (e.g. processing statistics)
 - Basic stats are available, similar to the mod-status module in Apache
 
+#### Integrated PHP Version
+
+PHP Version: 8.1.12
+
 #### Enabled PHP modules
 
 ```php
