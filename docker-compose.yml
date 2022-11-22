@@ -5,7 +5,7 @@ services:
 #--------------------------------------------------------------------------------------------------
   postgresserver:
     container_name: 'postgresserver'
-    hostname: 'db.iriven.net'
+    hostname: 'db.iriven.tld'
     image: atchondjo/postgres
     restart: always
     env_file:
@@ -20,7 +20,7 @@ services:
 #--------------------------------------------------------------------------------------------------
   dbadminserver:
     container_name: 'dbadminserver'
-    hostname: 'dbadmin.iriven.net'
+    hostname: 'dbadmin.iriven.tld'
     image: atchondjo/pgadmin4
     restart: always
     ports:
@@ -41,7 +41,7 @@ services:
 #--------------------------------------------------------------------------------------------------
   phpdaemonserver:
     container_name: 'phpdaemonserver'
-    hostname: 'php-fpm.iriven.net'
+    hostname: 'php-fpm.iriven.tld'
     restart: always
     build:
       context: ./core/build/php
@@ -65,7 +65,7 @@ services:
 #--------------------------------------------------------------------------------------------------
   gatewayserver:
     container_name: 'gatewayserver'
-    hostname: 'nginx.iriven.net'
+    hostname: 'nginx.iriven.tld'
     restart: always
     build:
       context: ./core/build/nginx
@@ -82,43 +82,43 @@ services:
 #--------------------------------------------------------------------------------------------------
 #   GITLAB WEB SERVICE
 #--------------------------------------------------------------------------------------------------
-  # gitlabserver:
-  #   image: alpinelinux/alpine-docker-gitlab
-  #   build: gitlab
-  #   hostname: ${GITLAB_HOSTNAME}
-  #   restart: always
-  #   volumes:
-  #     - ./core/docker/gitlab/repositories:/home/git/repositories
-  #     - ./core/docker/gitlab/config:/etc/gitlab
-  #     - ./core/docker/gitlab/log:/var/log
-  #     - ./core/docker/gitlab/builds:/home/git/gitlab/builds
-  #     - ./core/docker/gitlab/shared:/home/git/gitlab/shared
-  #     - ./core/docker/gitlab/uploads:/home/git/gitlab/public/uploads
-  #     - ./core/docker/gitlab/plugins:/home/git/gitlab/plugins
-  #   ports:
-  #     - "2222:22"
-  #     - "8080:80"
-  #   depends_on:
-  #     - postgresserver
-  #     - redis
-  #   # environment:
-  #   #   - POSTGRES_USER
-  #   #   - POSTGRES_PASSWORD
-  #   #   - GITLAB_ROOT_PASSWORD
-  #   #   - GITLAB_BACKUP_SKIP
-  #   #   - GITLAB_USE_PUMA
-  #   env_file:
-  #     - ./settings/.gitlab.env
-  #     - ./settings/.postgres.env
-#--------------------------------------------------------------------------------------------------
+  gitlabserver:
+    image: atchondjo/gitlab:latest
+    hostname: 'gitlab.iriven.tld'
+    restart: always
+    volumes:
+      - ./core/docker/gitlab/repositories:/home/git/repositories
+      - ./core/docker/gitlab/config:/etc/gitlab
+      - ./core/docker/gitlab/log:/var/log
+      - ./core/docker/gitlab/builds:/home/git/gitlab/builds
+      - ./core/docker/gitlab/shared:/home/git/gitlab/shared
+      - ./core/docker/gitlab/uploads:/home/git/gitlab/public/uploads
+      - ./core/docker/gitlab/plugins:/home/git/gitlab/plugins
+    ports:
+      - "2222:22"
+      - "82:80"
+    depends_on:
+      - postgresserver
+      - redisserver
+    # environment:
+    #   - POSTGRES_USER
+    #   - POSTGRES_PASSWORD
+    #   - GITLAB_ROOT_PASSWORD
+    #   - GITLAB_BACKUP_SKIP
+    #   - GITLAB_USE_PUMA
+    env_file:
+      - ./settings/.gitlab.env
+      - ./settings/.postgres.env
+# --------------------------------------------------------------------------------------------------
 #   PROJECT VOLUMES LISTING
-#--------------------------------------------------------------------------------------------------
-  # redis:
-  #   image: redis:5-alpine
-  #   restart: always
-  #   volumes:
-  #     - /srv/docker/gitlab/redis:/data
-  #   entrypoint: redis-server --appendonly yes
+# --------------------------------------------------------------------------------------------------
+  redisserver:
+    image: redis:5-alpine
+    hostname: 'redis.iriven.tld'
+    restart: always
+    volumes:
+      - ./core/docker/gitlab/redis:/data
+    entrypoint: redis-server --appendonly yes
 
 #--------------------------------------------------------------------------------------------------
 #   PROJECT VOLUMES LISTING

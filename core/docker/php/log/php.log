@@ -1,0 +1,18 @@
+[22-Nov-2022 08:50:51 Europe/Paris] PHP Fatal error:  Uncaught Error: Call to undefined function apache_get_modules() in /var/www/webroot/index.php:3
+Stack trace:
+#0 {main}
+  thrown in /var/www/webroot/index.php on line 3
+[22-Nov-2022 08:50:53 Europe/Paris] PHP Fatal error:  Uncaught Error: Call to undefined function apache_get_modules() in /var/www/webroot/index.php:3
+Stack trace:
+#0 {main}
+  thrown in /var/www/webroot/index.php on line 3
+[22-Nov-2022 08:57:11 Europe/Paris] PHP Notice:  Only variables should be passed by reference in /var/www/webroot/index.php on line 3
+[22-Nov-2022 08:57:11 Europe/Paris] PHP Notice:  Only variables should be passed by reference in /var/www/webroot/index.php on line 3
+[22-Nov-2022 08:57:28 Europe/Paris] PHP Notice:  Only variables should be passed by reference in /var/www/webroot/index.php on line 3
+[22-Nov-2022 08:57:28 Europe/Paris] PHP Notice:  Only variables should be passed by reference in /var/www/webroot/index.php on line 3
+[22-Nov-2022 08:57:29 Europe/Paris] PHP Notice:  Only variables should be passed by reference in /var/www/webroot/index.php on line 3
+[22-Nov-2022 08:57:29 Europe/Paris] PHP Notice:  Only variables should be passed by reference in /var/www/webroot/index.php on line 3
+[22-Nov-2022 08:57:29 Europe/Paris] PHP Notice:  Only variables should be passed by reference in /var/www/webroot/index.php on line 3
+[22-Nov-2022 08:57:29 Europe/Paris] PHP Notice:  Only variables should be passed by reference in /var/www/webroot/index.php on line 3
+[22-Nov-2022 08:57:29 Europe/Paris] PHP Notice:  Only variables should be passed by reference in /var/www/webroot/index.php on line 3
+[22-Nov-2022 08:57:29 Europe/Paris] PHP Notice:  Only variables should be passed by reference in /var/www/webroot/index.php on line 3
