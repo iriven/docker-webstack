@@ -24,9 +24,6 @@ PHP-FPM includes numerous features that can prove beneficial for websites receiv
 
 #### Enabled PHP modules
 
-
-...
-
 ```php
 <?php
 Array (
@@ -79,7 +76,7 @@ Array (
     [46] => zip
     [47] => Zend OPcache
 )
-...
+```
 
 ### 2- PHP-FPM and Nginx
 Nginx is the ideal combination with PHP-FPM. Why? Because it’s a stable web server recognized for its impressive performance and low resource-consumption.
