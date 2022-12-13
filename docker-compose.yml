@@ -9,9 +9,9 @@ services:
     image: atchondjo/postgres
     restart: always
     env_file:
-      - ./settings/.postgres.env
+      - ./src/settings/.postgres.env
     volumes:
-      - ./core/docker/postgres/data:/var/lib/postgresql/data
+      - ./src/core/postgres/data:/var/lib/postgresql/data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
 
@@ -26,10 +26,10 @@ services:
     ports:
       - 81:80
     env_file:
-      - ./settings/.pgadmin.env
+      - ./src/settings/.pgadmin.env
     volumes:
-      - ./core/docker/pgadmin:/var/lib/pgadmin
-      - ./core/docker/pgadmin/log:/var/log/pgadmin
+      - ./src/core/pgadmin:/var/lib/pgadmin
+      - ./src/core/pgadmin/log:/var/log/pgadmin
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     depends_on:
@@ -43,12 +43,12 @@ services:
     hostname: 'app.iriven.tld'
     restart: always
     build:
-      context: ./core/build/php
+      context: ./src/build/php
     expose:
       - '9000'
     volumes:
-      - ./www/:/var/www/webroot:cached
-      - ./core/docker/php/log:/var/log
+      - ./src/www/:/var/www/webroot:cached
+      - ./src/core/php/log:/var/log
     depends_on:
       - postgres
     healthcheck:
@@ -57,8 +57,8 @@ services:
       retries: 3
       start_period: 30s
     env_file:
-      - ./settings/.my_app.env
-      - ./settings/.postgres.env
+      - ./src/settings/.my_app.env
+      - ./src/settings/.postgres.env
 #--------------------------------------------------------------------------------------------------
 #   WEB CLIENT SERVICE
 #--------------------------------------------------------------------------------------------------
@@ -67,14 +67,14 @@ services:
     hostname: 'gw.iriven.tld'
     restart: always
     build:
-      context: ./core/build/nginx
+      context: ./src/build/nginx
     ports:
       - '80:80'
     links: # seems to have no effect alone
       - php
     volumes:
-        - ./www/:/var/www/webroot:cached
-        - ./core/docker/nginx/log:/var/log/nginx
+        - ./src/www/:/var/www/webroot:cached
+        - ./src/core/nginx/log:/var/log/nginx
     depends_on:
       - php
       - postgres
@@ -86,9 +86,9 @@ services:
 #     image: atchondjo/gitlab-shell:latest
 #     restart: always
 #     volumes:
-#       - ./core/docker/gitlab/config/gitlab-shell:/etc/gitlab/gitlab-shell
-#       - ./core/docker/gitlab/config/ssh:/etc/gitlab/ssh
-#       - ./core/docker/gitlab/log:/var/log
+#       - ./src/core/gitlab/config/gitlab-shell:/etc/gitlab/gitlab-shell
+#       - ./src/core/gitlab/config/ssh:/etc/gitlab/ssh
+#       - ./src/core/gitlab/log:/var/log
 #       - ssh-authorized-keys:/home/git/.ssh/
 #       - sockets:/home/git/run/
 #       - gitlab-secret:/etc/gitlab/gitlab-shell/secret
@@ -101,7 +101,7 @@ services:
 #     hostname: 'redis.iriven.tld'
 #     restart: always
 #     volumes:
-#       - ./core/docker/gitlab/redis:/data
+#       - ./src/core/gitlab/redis:/data
 #     entrypoint: redis-server --appendonly yes
 
 # # --------------------------------------------------------------------------------------------------
@@ -112,14 +112,14 @@ services:
 #     init: true
 #     restart: always
 #     # build:
-#     #   context: ./core/build/gitaly
+#     #   context: ./src/build/gitaly
 #     depends_on:
 #       - gitlabshellserver # for gitlab-secret
 #     volumes:
-#       - ./core/docker/gitlab/repositories:/home/git/repositories
-#       - ./core/docker/gitlab/config/gitaly/:/etc/gitlab/gitaly
-#       - ./core/docker/gitlab/config/gitlab-shell:/etc/gitlab/gitlab-shell
-#       - ./core/docker/gitlab/log/gitaly:/var/log/gitaly
+#       - ./src/core/gitlab/repositories:/home/git/repositories
+#       - ./src/core/gitlab/config/gitaly/:/etc/gitlab/gitaly
+#       - ./src/core/gitlab/config/gitlab-shell:/etc/gitlab/gitlab-shell
+#       - ./src/core/gitlab/log/gitaly:/var/log/gitaly
 #       - sockets:/home/git/run/
 #       - gitlab-secret:/etc/gitlab/gitlab-shell/secret
 
@@ -131,16 +131,16 @@ services:
 #     hostname: 'gitlab.iriven.tld'
 #     restart: always
 #     # build:
-#     #   context: ./core/build/gitlab
+#     #   context: ./src/build/gitlab
 #     volumes:
-#       - ./core/docker/gitlab/repositories:/home/git/repositories
-#       - ./core/docker/gitlab/config:/etc/gitlab
-#       - ./core/docker/gitlab/log:/var/log
-#       - ./core/docker/gitlab/builds:/home/git/gitlab/builds
-#       - ./core/docker/gitlab/shared:/home/git/gitlab/shared
-#       - ./core/docker/gitlab/uploads:/home/git/gitlab/public/uploads
-#       - ./core/docker/gitlab/plugins:/home/git/gitlab/plugins
-#       - ./core/docker/gitlab/certs/registry:/home/git/certs/registry
+#       - ./src/core/gitlab/repositories:/home/git/repositories
+#       - ./src/core/gitlab/config:/etc/gitlab
+#       - ./src/core/gitlab/log:/var/log
+#       - ./src/core/gitlab/builds:/home/git/gitlab/builds
+#       - ./src/core/gitlab/shared:/home/git/gitlab/shared
+#       - ./src/core/gitlab/uploads:/home/git/gitlab/public/uploads
+#       - ./src/core/gitlab/plugins:/home/git/gitlab/plugins
+#       - ./src/core/gitlab/certs/registry:/home/git/certs/registry
 #       - ssh-authorized-keys:/home/git/.ssh/
 #       - gitlab-secret:/etc/gitlab/gitlab-shell/secret
 #       - sockets:/home/git/run/
@@ -153,9 +153,9 @@ services:
 #       - gitalyserver
 #       - gitlabshellserver
 #     env_file:
-#       - ./settings/.postgres.env
-#       - ./settings/.gitlab.env
-#       - ./settings/.registry.env
+#       - ./src/settings/.postgres.env
+#       - ./src/settings/.gitlab.env
+#       - ./src/settings/.registry.env
 
 # # --------------------------------------------------------------------------------------------------
 # #   GITLAB REGISTRY SERVICE
@@ -167,7 +167,7 @@ services:
 #   #   depends_on:
 #   #     - gitlabserver
 #   #   volumes:
-#   #     - ./core/docker/gitlab/config/gitlab-runner:/etc/gitlab-runner
+#   #     - ./src/core/gitlab/config/gitlab-runner:/etc/gitlab-runner
 #   #     - sockets:/var/run/docker.sock
 #   #   # networks:
 #   #   #   - gitlab
@@ -182,8 +182,8 @@ services:
 #     depends_on:
 #       - gitlabserver
 #     volumes:
-#       - ./core/docker/gitlab/config/registry:/etc/docker/registry/
-#       - ./core/docker/gitlab/certs/registry/public:/etc/docker/certs
+#       - ./src/core/gitlab/config/registry:/etc/docker/registry/
+#       - ./src/core/gitlab/certs/registry/public:/etc/docker/certs
 
 # #--------------------------------------------------------------------------------------------------
 # #   PROJECT VOLUMES LISTING
