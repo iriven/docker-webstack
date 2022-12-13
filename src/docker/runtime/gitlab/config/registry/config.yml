@@ -1,0 +1,11 @@
+version: 0.1
+log:
+  level: debug
+storage:
+    filesystem:
+        rootdirectory: /var/lib/registry
+http:
+    addr: localhost:5000
+    secret: asecretforlocaldevelopment
+    debug:
+        addr: localhost:5001
