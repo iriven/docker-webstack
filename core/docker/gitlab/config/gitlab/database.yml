@@ -1,0 +1,9 @@
+production:
+  main:
+    adapter: postgresql
+    encoding: unicode
+    database: iriventeamdb
+    pool: 10
+    username: iriven
+    password: "secret"
+    host: "db.iriven.tld"
