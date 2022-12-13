@@ -7,8 +7,8 @@ RUN set -x \
     # create www-data user/group first, to be consistent throughout docker variants
     && adduser -S -D -H -u 1010 -s /sbin/nologin -G nginx -g nginx www-data ;\
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-COPY docker/default.d/nginx.conf /etc/nginx/nginx.conf
-ADD docker/sites.d /etc/nginx/conf.d
+COPY default.d/nginx.conf /etc/nginx/nginx.conf
+ADD sites.d /etc/nginx/conf.d
 RUN rm /etc/nginx/conf.d/default.conf
 WORKDIR /var/www/webroot
 EXPOSE 80
