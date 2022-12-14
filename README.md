@@ -97,3 +97,7 @@ Nginx is the ideal combination with PHP-FPM. Why? Because it’s a stable web se
 It features an asynchronous structure that’s highly-scalable, according to events. On top of this, memory consumption performance is significantly better when using Nginx and PHP-FPM together.
 
 PHP runs as an isolated service when you use PHP-FPM. Employing this PHP version as the language interpreter means requests will be processed via a TCP/IP socket, and the Nginx server handles HTTP requests only, while PHP-FPM interprets the PHP code. Taking advantage of two separate services is vital to become more efficient.
+
+### 3- Production, development and CI ready
+
+### 4- Production, development and CI ready
