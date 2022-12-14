@@ -1,9 +1,9 @@
 # docker-webstack
 
-A [Docker](https://www.docker.com/)-based plateform and runtime environment for [PHP](https://php.net) web application, with full [HTTP/2](https://symfony.com/doc/current/weblink.html), HTTP/3 and HTTPS support.
-
-
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XDCFPNTKUC4TU)
+
+
+A [Docker](https://www.docker.com/)-based plateform and runtime environment for [PHP](https://php.net) web application, with full [HTTP/2](https://symfony.com/doc/current/weblink.html), HTTP/3 and HTTPS support.
 
 ## Getting Started
 
@@ -17,7 +17,6 @@ A [Docker](https://www.docker.com/)-based plateform and runtime environment for 
 
 ### 1- PHP-FPM ENABLED
 PHP-FPM is an efficient method on how to minimize the memory consumption and rise the performance for the websites with heavy traffic. It is significantly faster than traditional CGI-based methods in multi-user PHP environments. If your primary goal for hosting your web application is to achieve optimal performance and security, then PHP-FPM is the way forward.
-
 
 #### PHP-FPM Key Features
 PHP-FPM includes numerous features that can prove beneficial for websites receiving traffic in large volumes frequently. These are:
