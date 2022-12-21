@@ -34,7 +34,7 @@ PHP-FPM includes numerous features that can prove beneficial for websites receiv
 
 #### Integrated PHP Version
 
-PHP Version: 8.1.12
+PHP Version: 8.2.0
 
 #### Enabled PHP modules
 
