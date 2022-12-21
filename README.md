@@ -40,56 +40,70 @@ PHP Version: 8.1.12
 
 ```php
 <?php
-Array (
-    [0] => Core
-    [1] => date
-    [2] => libxml
-    [3] => openssl
-    [4] => pcre
-    [5] => sqlite3
-    [6] => zlib
-    [7] => ctype
-    [8] => curl
-    [9] => dom
-    [10] => FFI
+[
+    [0] => bcmath
+    [1] => bz2
+    [2] => calendar
+    [3] => cgi-fcgi
+    [4] => core
+    [5] => ctype
+    [6] => curl
+    [7] => date
+    [8] => dom
+    [9] => exif
+    [10] => ffi
     [11] => fileinfo
     [12] => filter
     [13] => ftp
-    [14] => hash
-    [15] => iconv
-    [16] => json
-    [17] => mbstring
-    [18] => SPL
-    [19] => session
-    [20] => PDO
-    [21] => pdo_sqlite
-    [22] => standard
-    [23] => posix
-    [24] => readline
-    [25] => Reflection
-    [26] => Phar
-    [27] => SimpleXML
-    [28] => tokenizer
-    [29] => xml
-    [30] => xmlreader
-    [31] => xmlwriter
-    [32] => mysqlnd
-    [33] => cgi-fcgi
-    [34] => bcmath
-    [35] => calendar
-    [36] => exif
-    [37] => gd
-    [38] => intl
-    [39] => mysqli
-    [40] => pdo_mysql
-    [41] => pdo_pgsql
+    [14] => gd
+    [15] => gettext
+    [16] => gmp
+    [17] => hash
+    [18] => iconv
+    [19] => imap
+    [20] => intl
+    [21] => json
+    [22] => ldap
+    [23] => libxml
+    [24] => mbstring
+    [25] => mysqli
+    [26] => mysqlnd
+    [27] => openssl
+    [28] => pcntl
+    [29] => pcre
+    [30] => pdo
+    [31] => pdo_dblib
+    [32] => pdo_mysql
+    [33] => pdo_pgsql
+    [34] => pdo_sqlite
+    [35] => pgsql
+    [36] => phar
+    [37] => posix
+    [38] => random
+    [39] => readline
+    [40] => reflection
+    [41] => session
     [42] => shmop
-    [43] => soap
-    [44] => sockets
-    [45] => xsl
-    [46] => zip
-    [47] => Zend OPcache
-)
+    [43] => simplexml
+    [44] => soap
+    [45] => sockets
+    [46] => sodium
+    [47] => spl
+    [48] => sqlite3
+    [49] => standard
+    [50] => sysvmsg
+    [51] => sysvsem
+    [52] => sysvshm
+    [53] => tidy
+    [54] => tokenizer
+    [55] => xml
+    [56] => xmlreader
+    [57] => xmlwriter
+    [58] => xsl
+    [59] => zend opcache
+    [60] => zip
+    [61] => zlib
+]
 ```
 
 ### 3- PHP-FPM and Nginx

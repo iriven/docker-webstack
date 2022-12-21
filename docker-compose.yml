@@ -4,23 +4,27 @@ services:
 #   APP DATABASE SERVICE
 #--------------------------------------------------------------------------------------------------
   postgres:
-    container_name: 'DATABASE-SERVER'
-    hostname: 'db.iriven.tld'
+    container_name: dbserver_01
+    hostname: dbserver01
+    domainname: iriven.tld
     image: atchondjo/postgres
     restart: always
     env_file:
       - ./src/settings/.postgres.env
     volumes:
-      - ./src/docker/runtime/postgres/data:/var/lib/postgresql/data
+      - ./src/docker/services/postgres/data:/var/lib/postgresql/data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
+    # networks:
+    #   - vpcdbase
 
 #--------------------------------------------------------------------------------------------------
 #   DATABASES MANAGEMENT SERVICES
 #--------------------------------------------------------------------------------------------------
   pgadmin:
-    container_name: 'DBADMIN-SERVER'
-    hostname: 'dbadmin.iriven.tld'
+    container_name: dbserveradm_01
+    hostname: dbserveradm01
+    domainname: iriven.tld
     image: atchondjo/pgadmin4
     restart: always
     ports:
@@ -28,27 +32,30 @@ services:
     env_file:
       - ./src/settings/.pgadmin.env
     volumes:
-      - ./src/docker/runtime/pgadmin:/var/lib/pgadmin
-      - ./src/docker/runtime/pgadmin/log:/var/log/pgadmin
+      - ./src/docker/services/pgadmin:/var/lib/pgadmin
+      - ./src/docker/services/pgadmin/log:/var/log/pgadmin
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     depends_on:
       - postgres
+    # networks:
+    #   - vpcdbase
 
 #--------------------------------------------------------------------------------------------------
 #   PHP PROCESSING SERVICE
 #--------------------------------------------------------------------------------------------------
   php:
-    container_name: 'APPLICATION-SERVER'
-    hostname: 'app.iriven.tld'
+    container_name: webserver_01
+    hostname: webserver01
+    domainname: iriven.tld
     restart: always
     build:
-      context: ./src/docker/build/php
+      context: ./src/docker/infra/php
     expose:
-      - '9000'
+      - 9000
     volumes:
       - ./src/www/:/var/www/webroot:cached
-      - ./src/docker/runtime/php/log:/var/log
+      - ./src/docker/services/php/log:/var/log
     depends_on:
       - postgres
     healthcheck:
@@ -59,136 +66,81 @@ services:
     env_file:
       - ./src/settings/.my_app.env
       - ./src/settings/.postgres.env
+    # networks:
+    #   # you may set custom IP addresses
+    #   - vpcprod
+    #   - vpcdbase
 #--------------------------------------------------------------------------------------------------
 #   WEB CLIENT SERVICE
 #--------------------------------------------------------------------------------------------------
   nginx:
-    container_name: 'GATEWAY-SERVER'
-    hostname: 'gw.iriven.tld'
+    container_name: proxyserver_01
+    hostname: proxyserver01
+    domainname: iriven.tld
     restart: always
     build:
-      context: ./src/docker/build/nginx
+      context: ./src/docker/infra/nginx
     ports:
       - '80:80'
     links: # seems to have no effect alone
       - php
     volumes:
         - ./src/www/:/var/www/webroot:cached
-        - ./src/docker/runtime/nginx/log:/var/log/nginx
+        - ./src/docker/services/nginx/log:/var/log/nginx
     depends_on:
       - php
       - postgres
+    # networks:
+    #   - vpcshared
+    #   - vpcprod
 
-# # --------------------------------------------------------------------------------------------------
-# #   GITLAB-SHELL SERVICE
-# # --------------------------------------------------------------------------------------------------
-#   gitlabshellserver:
-#     image: atchondjo/gitlab-shell:latest
-#     restart: always
-#     volumes:
-#       - ./src/docker/runtime/gitlab/config/gitlab-shell:/etc/gitlab/gitlab-shell
-#       - ./src/docker/runtime/gitlab/config/ssh:/etc/gitlab/ssh
-#       - ./src/docker/runtime/gitlab/log:/var/log
-#       - ssh-authorized-keys:/home/git/.ssh/
-#       - sockets:/home/git/run/
-#       - gitlab-secret:/etc/gitlab/gitlab-shell/secret
-
-# # --------------------------------------------------------------------------------------------------
-# #   REDIS SERVICE
-# # --------------------------------------------------------------------------------------------------
-#   redisserver:
-#     image: atchondjo/redis:latest
-#     hostname: 'redis.iriven.tld'
-#     restart: always
-#     volumes:
-#       - ./src/docker/runtime/gitlab/redis:/data
-#     entrypoint: redis-server --appendonly yes
-
-# # --------------------------------------------------------------------------------------------------
-# #   GITALY SERVICE
-# # --------------------------------------------------------------------------------------------------
-#   gitalyserver:
-#     image: atchondjo/gitaly:latest
-#     init: true
-#     restart: always
-#     # build:
-#     #   context: ./src/docker/build/gitaly
-#     depends_on:
-#       - gitlabshellserver # for gitlab-secret
-#     volumes:
-#       - ./src/docker/runtime/gitlab/repositories:/home/git/repositories
-#       - ./src/docker/runtime/gitlab/config/gitaly/:/etc/gitlab/gitaly
-#       - ./src/docker/runtime/gitlab/config/gitlab-shell:/etc/gitlab/gitlab-shell
-#       - ./src/docker/runtime/gitlab/log/gitaly:/var/log/gitaly
-#       - sockets:/home/git/run/
-#       - gitlab-secret:/etc/gitlab/gitlab-shell/secret
-
-# #--------------------------------------------------------------------------------------------------
-# #   GITLAB WEB SERVICE
-# #--------------------------------------------------------------------------------------------------
-#   gitlabserver:
-#     image: atchondjo/gitlab:latest
-#     hostname: 'gitlab.iriven.tld'
-#     restart: always
-#     # build:
-#     #   context: ./src/docker/build/gitlab
-#     volumes:
-#       - ./src/docker/runtime/gitlab/repositories:/home/git/repositories
-#       - ./src/docker/runtime/gitlab/config:/etc/gitlab
-#       - ./src/docker/runtime/gitlab/log:/var/log
-#       - ./src/docker/runtime/gitlab/builds:/home/git/gitlab/builds
-#       - ./src/docker/runtime/gitlab/shared:/home/git/gitlab/shared
-#       - ./src/docker/runtime/gitlab/uploads:/home/git/gitlab/public/uploads
-#       - ./src/docker/runtime/gitlab/plugins:/home/git/gitlab/plugins
-#       - ./src/docker/runtime/gitlab/certs/registry:/home/git/certs/registry
-#       - ssh-authorized-keys:/home/git/.ssh/
-#       - gitlab-secret:/etc/gitlab/gitlab-shell/secret
-#       - sockets:/home/git/run/
-#     ports:
-#       - "2222:22"
-#       - "8080:80"
-#     depends_on:
-#       - postgres
-#       - redisserver
-#       - gitalyserver
-#       - gitlabshellserver
-#     env_file:
-#       - ./src/settings/.postgres.env
-#       - ./src/settings/.gitlab.env
-#       - ./src/settings/.registry.env
-
-# # --------------------------------------------------------------------------------------------------
-# #   GITLAB REGISTRY SERVICE
-# # --------------------------------------------------------------------------------------------------
-#   # gitlabrunnerserver:
-#   #   image: gitlab/gitlab-runner:alpine
-#   #   container_name: gitlab-runner
-#   #   restart: always
-#   #   depends_on:
-#   #     - gitlabserver
-#   #   volumes:
-#   #     - ./src/docker/runtime/gitlab/config/gitlab-runner:/etc/gitlab-runner
-#   #     - sockets:/var/run/docker.sock
-#   #   # networks:
-#   #   #   - gitlab
-
-# # --------------------------------------------------------------------------------------------------
-# #   GITLAB REGISTRY SERVICE
-# # --------------------------------------------------------------------------------------------------
-#   registryserver:
-#     image: registry:latest
-#     ports:
-#       - 5001:5000
-#     depends_on:
-#       - gitlabserver
-#     volumes:
-#       - ./src/docker/runtime/gitlab/config/registry:/etc/docker/registry/
-#       - ./src/docker/runtime/gitlab/certs/registry/public:/etc/docker/certs
-
-# #--------------------------------------------------------------------------------------------------
-# #   PROJECT VOLUMES LISTING
-# #--------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------
+#   PROJECT VOLUMES LISTING
+#--------------------------------------------------------------------------------------------------
 # volumes:
-#   sockets:
+#   pgadminvol:
 #   ssh-authorized-keys:
 #   gitlab-secret:
+
+#--------------------------------------------------------------------------------------------------
+#   DOCKER CONTAINERS NETWORK LISTING
+#--------------------------------------------------------------------------------------------------
+# networks:
+#   vpcshared:
+#     # use the bridge driver, but enable IPv6
+#     driver: bridge
+#     driver_opts:
+#       com.docker.network.enable_ipv6: "true"
+#     ipam:
+#       driver: default
+#       config:
+#         - subnet: 172.16.238.0/24
+#           gateway: 172.16.238.1
+#         - subnet: "2001:3984:3989::/64"
+#           gateway: "2001:3984:3989::1"
+#   vpcprod:
+#     # use a custom driver, with no options
+#     driver: overlay
+#     attachable: true
+#     driver_opts:
+#       com.docker.network.enable_ipv6: "true"
+#     ipam:
+#       driver: default
+#       config:
+#         - subnet: 172.17.235.0/24
+#           gateway: 172.17.235.1
+#         - subnet: "2004:3981:3989::/64"
+#           gateway: "2004:3981:3989::1"
+#   vpcdbase:
+#     # use a custom driver, with no options
+#     driver: overlay
+#     attachable: true
+#     driver_opts:
+#       com.docker.network.enable_ipv6: "true"
+#     ipam:
+#       driver: default
+#       config:
+#         - subnet: 172.10.212.0/24
+#           gateway: 172.10.212.1
+#         - subnet: "2002:3086:3989::/64"
+#           gateway: "2002:3086:3989::1"
